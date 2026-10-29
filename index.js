@@ -200,7 +200,10 @@ function decode(buffer) {
     switch (type) {
     case 'fmt ':
       let formatId = u16();
-      if (formatId !== 0x0001 && formatId !== 0x0003 && formatId !== 0xFFFE)
+      // WAVE_FORMAT_EXTENSIBLE: the format is in the first two bytes of the SubFormat GUID.
+      if (formatId === 0xFFFE && size >= 40)
+        formatId = v.getUint16(pos + 22, true);
+      if (formatId !== 0x0001 && formatId !== 0x0003)
         throw new TypeError(`Unsupported format in WAV file: ${formatId.toString(16)}`);
       fmt = {
         format: 'lpcm',

@@ -64,3 +64,14 @@ exports.test_buffer_offset = test => {
     test.done();
   });
 };
+
+exports.test_extensible = test => {
+  test.expect(2);
+  // WAVE_FORMAT_EXTENSIBLE, one mono sample. SubFormat IEEE float, 32 bits, 0.5
+  let float32 = new Uint8Array(Buffer.from('524946464c00000057415645666d742028000000feff0100401f0000007d00000400200016002000040000000300000000001000800000aa00389b7166616374040000000100000064617461040000000000003f', 'hex'));
+  test.deepEqual(Array.from(wav.decode(float32).channelData[0]), [0.5]);
+  // SubFormat PCM, 16 bits, -0.5
+  let pcm16 = new Uint8Array(Buffer.from('524946463e00000057415645666d742028000000feff0100401f0000803e00000200100016001000040000000100000000001000800000aa00389b71646174610200000000c0', 'hex'));
+  test.deepEqual(Array.from(wav.decode(pcm16).channelData[0]), [-0.5]);
+  test.done();
+};
