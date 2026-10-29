@@ -221,7 +221,10 @@ function decode(buffer) {
       let channelData = [];
       for (let ch = 0; ch < channels; ++ch)
         channelData[ch] = new Float32Array(samples);
-      lookup(data_decoders, fmt.bitDepth, fmt.floatingPoint)(buffer, pos, channelData, channels, samples);
+      // The decoders use typed arrays, which need an offset that is a multiple
+      // of the sample size, so copy the samples to the start of a new buffer.
+      let data = buffer.slice(pos, pos + samples * fmt.blockSize);
+      lookup(data_decoders, fmt.bitDepth, fmt.floatingPoint)(data, 0, channelData, channels, samples);
       return {
         sampleRate: sampleRate,
         channelData: channelData

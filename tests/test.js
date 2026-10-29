@@ -64,3 +64,12 @@ exports.test_buffer_offset = test => {
     test.done();
   });
 };
+
+exports.test_unaligned_data = test => {
+  test.expect(1);
+  // 32-bit float, one mono sample of 0.5. The fmt chunk has 18 bytes and is
+  // followed by a fact chunk, so the samples start at byte 58.
+  let buffer = new Uint8Array(Buffer.from('524946463600000057415645666d74201200000003000100401f0000007d000004002000000066616374040000000100000064617461040000000000003f', 'hex'));
+  test.deepEqual(Array.from(wav.decode(buffer).channelData[0]), [0.5]);
+  test.done();
+};
