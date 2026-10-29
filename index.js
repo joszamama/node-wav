@@ -149,7 +149,7 @@ function decode(buffer) {
     // If we are handed a typed array or a buffer, then we have to consider the
     // offset and length into the underlying array buffer.
     pos = buffer.byteOffset;
-    end = buffer.length;
+    end = buffer.byteOffset + buffer.byteLength;
     buffer = buffer.buffer;
   } else {
     // If we are handed a straight up array buffer, start at offset 0 and use

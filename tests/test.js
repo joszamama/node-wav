@@ -64,3 +64,15 @@ exports.test_buffer_offset = test => {
     test.done();
   });
 };
+
+exports.test_buffer_byte_offset = test => {
+  test.expect(1);
+  // 32-bit float, one mono sample of 0.5 (48 bytes), in a Buffer that starts
+  // at byte 64 of its ArrayBuffer.
+  let bytes = Buffer.from('524946462800000057415645666d74201000000003000100401f0000007d00000400200064617461040000000000003f', 'hex');
+  let buffer = Buffer.from(new ArrayBuffer(64 + bytes.length), 64);
+  bytes.copy(buffer);
+  let decoded = wav.decode(buffer);
+  test.deepEqual(decoded && Array.from(decoded.channelData[0]), [0.5]);
+  test.done();
+};
